@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"ltimindtree/cmd/utils"
+	utils "ltimindtree/utils"
 
 	"github.com/gin-gonic/gin"
 )
