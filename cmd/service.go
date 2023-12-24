@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 
@@ -58,9 +57,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 	if title == "" {
 		return track, errors.New("malformed request (no title found)")
 	}
-	if !strings.HasPrefix(title, "isrc") {
-		return track, errors.New("malformed request (invalid title found)")
-	}
+	// if !strings.HasPrefix(title, "isrc") {
+	// 	return track, errors.New("malformed request (invalid title found)")
+	// }
 
 	results, err := client.Search(ctx, title, spotify.SearchTypeTrack)
 	if err != nil {
