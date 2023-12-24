@@ -11,7 +11,7 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "Noorul H. Khan",
-            "url": "http://www.swagger.io/support",
+            "url": "https://www.linkedin.com/in/noorul-hasan-khan-38125b11b/",
             "email": "noorulhasan.khan@outlook.com"
         },
         "license": {

@@ -68,28 +68,34 @@ func FetchTrackByTitle(title string) (Track, error) {
 	}
 	// handle track results
 	if results.Tracks != nil {
-		fmt.Println("Tracks:")
-		if len(results.Tracks.Tracks) != 0 {
-			item := results.Tracks.Tracks[0]
-			track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+		fmt.Println("*******************A Track by ISRC code:")
+		popularity := 0
+		for _, item := range results.Tracks.Tracks {
+			//max popularity
+			popularity = max(popularity, item.Popularity)
+		}
+		for _, item := range results.Tracks.Tracks {
+			if item.Popularity == popularity {
+				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 
-			// todo: insert records to database
-			// tx := DB.Begin()
-			// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
-			// 	tx.Rollback()
-			// 	log.Println("Inside getTrack:", err.Error())
-			// }
-			// if err = tx.Create(GetArtistsOfTrack(item.Artists)).Error; err != nil {
-			// 	tx.Rollback()
-			// 	log.Println("Inside getTrack:", err.Error())
-			// }
-			// if err = tx.Create(&track).Error; err != nil {
-			// 	tx.Rollback()
-			// 	log.Println("Inside getTrack:", err.Error())
-			// }
-			// if err := tx.Commit().Error; err != nil {
-			// 	tx.Rollback()
-			// }
+				// todo: insert records to database
+				// tx := DB.Begin()
+				// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
+				// 	tx.Rollback()
+				// 	log.Println("Inside getTrack:", err.Error())
+				// }
+				// if err = tx.Create(GetArtistsOfTrack(item.Artists)).Error; err != nil {
+				// 	tx.Rollback()
+				// 	log.Println("Inside getTrack:", err.Error())
+				// }
+				// if err = tx.Create(&track).Error; err != nil {
+				// 	tx.Rollback()
+				// 	log.Println("Inside getTrack:", err.Error())
+				// }
+				// if err := tx.Commit().Error; err != nil {
+				// 	tx.Rollback()
+				// }
+			}
 		}
 	}
 	return track, nil
@@ -107,16 +113,16 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	}
 	// handle track results
 	if results.Tracks != nil {
-		fmt.Println("Tracks:")
+		log.Println("*******************Tracks by Artist:")
 		for _, item := range results.Tracks.Tracks {
 			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 			tracks = append(tracks, track)
 		}
 	}
 	// todo: insert records to database
-	if err = DB.Create(&tracks).Error; err != nil {
-		log.Println("Inside getTrack:", err.Error())
-	}
+	// if err = DB.Create(&tracks).Error; err != nil {
+	// 	log.Println("Inside getTrack:", err.Error())
+	// }
 	return tracks, nil
 }
 

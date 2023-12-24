@@ -9,7 +9,7 @@ func init() {
 }
 
 // @contact.name   Noorul H. Khan
-// @contact.url    http://www.swagger.io/support
+// @contact.url    https://www.linkedin.com/in/noorul-hasan-khan-38125b11b/
 // @contact.email  noorulhasan.khan@outlook.com
 
 // @license.name  Apache 2.0
