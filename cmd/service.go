@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 
@@ -38,7 +39,7 @@ func getToken() (*oauth2.Token, error) {
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		TokenURL:     spotifyauth.TokenURL,
 	}
-	fmt.Println(os.Getenv("CLIENT_ID"), " :---:", os.Getenv("CLIENT_SECRET"))
+	// fmt.Println(os.Getenv("CLIENT_ID"), " :---:", os.Getenv("CLIENT_SECRET"))
 	token, err := config.Token(ctx)
 	if err != nil {
 		log.Fatalf("couldn't get token: %v", err)
@@ -59,9 +60,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 	if title == "" {
 		return track, errors.New("malformed request (no title found)")
 	}
-	// if !strings.HasPrefix(title, "irsc:") {
-	// 	return track, errors.New("malformed request (invalid title found)")
-	// }
+	if !strings.HasPrefix(title, "isrc") {
+		return track, errors.New("malformed request (invalid title found)")
+	}
 
 	results, err := client.Search(ctx, title, spotify.SearchTypeTrack)
 	if err != nil {
