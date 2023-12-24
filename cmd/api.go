@@ -5,12 +5,16 @@ import (
 
 	utils "ltimindtree/utils"
 
+	_ "ltimindtree/cmd/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func InitializeRouter() {
 	router := gin.Default()
-	// router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/track/search/:title", getTrack)
 	router.GET("/track/find/:artist", findTracks)
@@ -42,17 +46,17 @@ func getTrack(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, track)
 }
 
-// getPassenger godoc
-// @Summary Get tracks collection by artist
-// @Description Get tracks collection by artist
+// findTracks godoc
+// @Summary Get tracks collection by Artist
+// @Description Get tracks collection by Artist
 // @Accept  json
 // @Produce  json
-// @Param artist path string true "artist"
+// @Param artist path string true "Artist"
 // @Success 200 {object} []main.Track
 // @Failure 400 {object} utils.ErrResp
 // @Failure 404 {object} utils.ErrResp
 // @Failure 500 {object} utils.ErrResp
-// @Router /track/find/{phrase} [get]
+// @Router /track/find/{artist} [get]
 func findTracks(c *gin.Context) {
 	var err error
 	var tracks []Track

@@ -10,23 +10,26 @@ import (
 )
 
 type Track struct {
-	ID      string   `gorm:"primary_key;column:track_id" binding:"-" json:"track_id,omitempty"`
+	gorm.Model
+	TrackID string   `gorm:"primary_key;column:track_id;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
 	ISRC    string   `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
-	Title   string   `gorm:"column:title" json:"title,omitempty"`
-	Images  []Image  `gorm:"column:images;foreignKey:url;references:track_id" json:"images,omitempty"`
-	Artists []Artist `gorm:"column:artists;foreignKey:artist_id;references:track_id" json:"artists,omitempty"`
+	Title   string   `gorm:"column:title;not null" json:"title,omitempty"`
+	Images  []Image  `gorm:"column:images;many2many:track_images" json:"images,omitempty"`
+	Artists []Artist `gorm:"column:artists;many2many:track_artists" json:"artists,omitempty"`
 }
 
 type Image struct {
-	Height int    `gorm:"column:height" json:"height,omitempty"`
-	Width  int    `gorm:"column:width" json:"width,omitempty"`
-	URL    string `gorm:"primary_key;column:url" json:"url,omitempty"`
+	gorm.Model
+	Height int    `gorm:"column:height;not null" json:"height,omitempty"`
+	Width  int    `gorm:"column:width;not null" json:"width,omitempty"`
+	URL    string `gorm:"column:url;primary_key;not null;uniqueIndex;ON CONFLICT DO NOTHING" json:"url,omitempty"`
 }
 
 type Artist struct {
-	ID   string `gorm:"primary_key;column:artist_id" binding:"-" json:"artist_id,omitempty"`
-	Name string `gorm:"column:name" json:"name,omitempty"`
-	URI  string `gorm:"column:uri" json:"uri,omitempty"`
+	gorm.Model
+	ArtistID string `gorm:"column:artist_id;primary_key;not null;uniqueIndex;ON CONFLICT DO NOTHING" binding:"-" json:"artist_id,omitempty"`
+	Name     string `gorm:"column:name;not null" json:"name,omitempty"`
+	URI      string `gorm:"column:uri;not null" json:"uri,omitempty"`
 }
 
 var DB *gorm.DB
@@ -51,4 +54,8 @@ func InitialMigration() {
 
 	DB.Exec("PRAGMA foreign_keys = ON")
 	DB.AutoMigrate(&Image{}, &Artist{}, &Track{})
+	// DB.Exec("PRAGMA table_info('tracks')")
+	// DB.Exec("PRAGMA table_info('images')")
+	// DB.Exec("PRAGMA table_info('artists')")
+	fmt.Println("Database tables migrated...")
 }

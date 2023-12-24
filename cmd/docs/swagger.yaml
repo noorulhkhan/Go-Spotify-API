@@ -1,0 +1,145 @@
+definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  main.Artist:
+    properties:
+      artist_id:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+      uri:
+        type: string
+    type: object
+  main.Image:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      height:
+        type: integer
+      id:
+        type: integer
+      updatedAt:
+        type: string
+      url:
+        type: string
+      width:
+        type: integer
+    type: object
+  main.Track:
+    properties:
+      artists:
+        items:
+          $ref: '#/definitions/main.Artist'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/main.Image'
+        type: array
+      isrc:
+        type: string
+      title:
+        type: string
+      track_id:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  utils.ErrResp:
+    properties:
+      error:
+        example: record not found
+        type: string
+      message:
+        example: Record not found
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /track/find/{artist}:
+    get:
+      consumes:
+      - application/json
+      description: Get tracks collection by Artist
+      parameters:
+      - description: Artist
+        in: path
+        name: artist
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Track'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+      summary: Get tracks collection by Artist
+  /track/search/{title}:
+    get:
+      consumes:
+      - application/json
+      description: Gets a track by Title or ISRC
+      parameters:
+      - description: Title
+        in: path
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Track'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+      summary: Gets a track by Title or ISRC
+swagger: "2.0"

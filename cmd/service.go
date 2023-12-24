@@ -24,7 +24,6 @@ var (
 )
 
 func authorize() {
-	// Find .env file
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
@@ -39,7 +38,6 @@ func getToken() (*oauth2.Token, error) {
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		TokenURL:     spotifyauth.TokenURL,
 	}
-	// fmt.Println(os.Getenv("CLIENT_ID"), " :---:", os.Getenv("CLIENT_SECRET"))
 	token, err := config.Token(ctx)
 	if err != nil {
 		log.Fatalf("couldn't get token: %v", err)
@@ -71,19 +69,32 @@ func FetchTrackByTitle(title string) (Track, error) {
 	// handle track results
 	if results.Tracks != nil {
 		fmt.Println("Tracks:")
-		for _, item := range results.Tracks.Tracks {
-			// fmt.Println("   item.ID:ID=> ", item.ID.String())
-			// fmt.Println("   item.Name:ISRC=> ", item.ExternalIDs["isrc"])
-			// fmt.Println("   item.Name:ImageURL=> ", item.ExternalURLs, item.Album.Images[0])
-			// fmt.Println("   item.Name:Title=> ", item.Name)
-			// fmt.Println("   item.Artists:=> ", item.Artists[0].Name, item.Artists[0].URI)
-			// fmt.Printf("\n   item:=> %#v\n", item)
-			track = Track{ID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
-			break
+		if len(results.Tracks.Tracks) != 0 {
+			item := results.Tracks.Tracks[0]
+			track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+
 		}
-	}
-	if err = DB.Create(&track).Error; err != nil {
-		log.Println("Inside getTrack:", err.Error())
+		// for _, item := range results.Tracks.Tracks {
+		// 	track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+		// 	// todo: insert records to database
+		// 	// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
+		// 	// 	tx.Rollback()
+		// 	// 	log.Println("Inside getTrack:", err.Error())
+		// 	// }
+		// 	// if err = tx.Create(GetArtistsOfTrack(item.Artists)).Error; err != nil {
+		// 	// 	tx.Rollback()
+		// 	// 	log.Println("Inside getTrack:", err.Error())
+		// 	// }
+		// 	// if err = tx.Create(&track).Error; err != nil {
+		// 	// 	tx.Rollback()
+		// 	// 	log.Println("Inside getTrack:", err.Error())
+		// 	// }
+		// 	// if err := tx.Commit().Error; err != nil {
+		// 	// 	tx.Rollback()
+		// 	// }
+		// 	break
+		// }
+		// return track, err
 	}
 	return track, nil
 }
@@ -102,16 +113,11 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	if results.Tracks != nil {
 		fmt.Println("Tracks:")
 		for _, item := range results.Tracks.Tracks {
-			// fmt.Println("   item.ID:ID=> ", item.ID.String())
-			// fmt.Println("   item.Name:ISRC=> ", item.ExternalIDs["isrc"])
-			// fmt.Println("   item.Name:ImageURL=> ", item.ExternalURLs, item.Album.Images[0].URL, GetImageUrlOfTrack(item.Album.Images))
-			// fmt.Println("   item.Name:Title=> ", item.Name)
-			// fmt.Println("   item.Artists:=> ", GetArtistsOfTrack(item.Artists))
-			// fmt.Println("   item.Artists:=> ", item.Artists[0].Name, item.Artists[0].URI)
-			track := Track{ID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 			tracks = append(tracks, track)
 		}
 	}
+	// todo: insert records to database
 	if err = DB.Create(&tracks).Error; err != nil {
 		log.Println("Inside getTrack:", err.Error())
 	}
@@ -121,7 +127,7 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) []Artist {
 	artists := make([]Artist, 0)
 	for _, item := range simpleArtist {
-		artists = append(artists, Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)})
+		artists = append(artists, Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)})
 	}
 	return artists
 }
