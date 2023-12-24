@@ -82,6 +82,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 			break
 		}
 	}
+	if err = DB.Create(&track).Error; err != nil {
+		log.Println("Inside getTrack:", err.Error())
+	}
 	return track, nil
 }
 
@@ -109,6 +112,9 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 			tracks = append(tracks, track)
 		}
 	}
+	if err = DB.Create(&tracks).Error; err != nil {
+		log.Println("Inside getTrack:", err.Error())
+	}
 	return tracks, nil
 }
 
@@ -123,7 +129,7 @@ func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) []Artist {
 func GetImageUrlOfTrack(spotifyImages []spotify.Image) []Image {
 	images := make([]Image, 0)
 	for _, image := range spotifyImages {
-		images = append(images, Image{Hight: image.Height, Width: image.Width, URL: image.URL})
+		images = append(images, Image{Height: image.Height, Width: image.Width, URL: image.URL})
 	}
 	return images
 }

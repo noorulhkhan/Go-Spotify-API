@@ -10,23 +10,23 @@ import (
 )
 
 type Track struct {
-	ID      string   `json:"track_id,omitempty" gorm:"primary_key;column:track_id" binding:"-"`
-	ISRC    string   `json:"isrc" gorm:"column:irsc;uniqueIndex;not null"`
-	Title   string   `json:"title,omitempty" gorm:"column:title"`
-	Images  []Image  `json:"image,omitempty"`
-	Artists []Artist `json:"artists,omitempty"`
+	ID      string   `gorm:"primary_key;column:track_id" binding:"-" json:"track_id,omitempty"`
+	ISRC    string   `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
+	Title   string   `gorm:"column:title" json:"title,omitempty"`
+	Images  []Image  `gorm:"column:images;foreignKey:url;references:track_id" json:"images,omitempty"`
+	Artists []Artist `gorm:"column:artists;foreignKey:artist_id;references:track_id" json:"artists,omitempty"`
 }
 
 type Image struct {
-	Hight int    `json:"height,omitempty" gorm:"column:high"`
-	Width int    `json:"width,omitempty" gorm:"column:width"`
-	URL   string `json:"url,omitempty" gorm:"column:url"`
+	Height int    `gorm:"column:height" json:"height,omitempty"`
+	Width  int    `gorm:"column:width" json:"width,omitempty"`
+	URL    string `gorm:"primary_key;column:url" json:"url,omitempty"`
 }
 
 type Artist struct {
-	ID   string `json:"artist_id,omitempty" gorm:"primary_key;column_artist_id" binding:"-"`
-	Name string `json:"name,omitempty" gorm:"column:name"`
-	URI  string `json:"uri,omitempty" gorm:"column:uri"`
+	ID   string `gorm:"primary_key;column:artist_id" binding:"-" json:"artist_id,omitempty"`
+	Name string `gorm:"column:name" json:"name,omitempty"`
+	URI  string `gorm:"column:uri" json:"uri,omitempty"`
 }
 
 var DB *gorm.DB
@@ -49,5 +49,6 @@ func InitialMigration() {
 		return
 	}
 
+	DB.Exec("PRAGMA foreign_keys = ON")
 	DB.AutoMigrate(&Image{}, &Artist{}, &Track{})
 }
