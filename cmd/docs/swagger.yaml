@@ -1,41 +1,21 @@
 definitions:
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   main.Artist:
     properties:
       artist_id:
         type: string
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       name:
-        type: string
-      updatedAt:
         type: string
       uri:
         type: string
     type: object
   main.Image:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       height:
         type: integer
       id:
         type: integer
-      updatedAt:
-        type: string
       url:
         type: string
       width:
@@ -47,10 +27,6 @@ definitions:
         items:
           $ref: '#/definitions/main.Artist'
         type: array
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       images:
@@ -62,8 +38,6 @@ definitions:
       title:
         type: string
       track_id:
-        type: string
-      updatedAt:
         type: string
     type: object
   utils.ErrResp:

@@ -122,37 +122,16 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "main.Artist": {
             "type": "object",
             "properties": {
                 "artist_id": {
                     "type": "string"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
                     "type": "string"
                 },
                 "uri": {
@@ -163,20 +142,11 @@ const docTemplate = `{
         "main.Image": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
                 "height": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
                 },
                 "url": {
                     "type": "string"
@@ -195,12 +165,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/main.Artist"
                     }
                 },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -217,9 +181,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "track_id": {
-                    "type": "string"
-                },
-                "updatedAt": {
                     "type": "string"
                 }
             }
