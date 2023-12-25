@@ -15,6 +15,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/zmb3/spotify/v2"
+	"gorm.io/gorm"
 )
 
 var (
@@ -94,6 +95,10 @@ func FetchTrackByTitle(title string) (Track, error) {
 				// if err := tx.Commit().Error; err != nil {
 				// 	tx.Rollback()
 				// }
+				if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&track).Error; err != nil {
+					fmt.Println("DEBUG:******************************Something wrong went")
+			
+				}
 			}
 		}
 	}
