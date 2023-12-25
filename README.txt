@@ -7,7 +7,7 @@ Code & build:
 	; latest code is on dev branch
 	git clone https://github.com/noorulhkhan/Go-Spotify-API.git
 	cd Go-Spotify-API
-	git checkout dev
+	git checkout develop
 	cd cmd
 	go build
 	.\cmd.exe

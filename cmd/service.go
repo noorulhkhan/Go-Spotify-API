@@ -58,9 +58,6 @@ func FetchTrackByTitle(title string) (Track, error) {
 	if title == "" {
 		return track, errors.New("malformed request (no title found)")
 	}
-	// if !strings.HasPrefix(title, "isrc") {
-	// 	return track, errors.New("malformed request (invalid title found)")
-	// }
 
 	results, err := client.Search(ctx, title, spotify.SearchTypeTrack)
 	if err != nil {
@@ -115,12 +112,6 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 
 func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
 	var str string
-	// if len(simpleArtist) != 0 {
-	// 	item := simpleArtist[0]
-	// 	artist := Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
-	// 	bytes, _ := json.Marshal(artist)
-	// 	str = fmt.Sprint(string(bytes))
-	// }
 	artists := make([]Artist, 0)
 	for _, item := range simpleArtist {
 		artist := Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
@@ -133,12 +124,6 @@ func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
 
 func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
 	var str string
-	// if len(spotifyImages) != 0 {
-	// 	item := spotifyImages[0]
-	// 	image := Image{Height: item.Height, Width: item.Width, URL: item.URL}
-	// 	bytes, _ := json.Marshal(image)
-	// 	str = fmt.Sprint(string(bytes))
-	// }
 	images := make([]Image, 0)
 	for _, item := range spotifyImages {
 		image := Image{Height: item.Height, Width: item.Width, URL: item.URL}

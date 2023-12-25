@@ -51,6 +51,7 @@ func InitialMigration() {
 
 	DB.Exec("PRAGMA foreign_keys = ON")
 	DB.AutoMigrate(&Track{})
+	// Using JSON of artists and images in tracks table instead of original object since some error in inserting many-to-many record
 	// DB.AutoMigrate(&Image{}, &Artist{}, &Track{})
 	fmt.Println("Database tables migrated...")
 }
