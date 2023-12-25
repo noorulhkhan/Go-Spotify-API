@@ -9,9 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type TrackView struct {
+	ID      string  `gorm:"column:track_id;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
+	ISRC    string  `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
+	Title   string  `gorm:"column:title;not null" json:"title,omitempty"`
+	Images  *Image  `gorm:"column:images;not null" json:"images,omitempty"`
+	Artists *Artist `gorm:"column:artists;not null" json:"artists,omitempty"`
+}
+
 type Track struct {
-	ID      uint   `gorm:"primaryKey;type:int"`
-	TrackID string `gorm:"column:track_id;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
+	ID      string `gorm:"column:track_id;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
 	ISRC    string `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
 	Title   string `gorm:"column:title;not null" json:"title,omitempty"`
 	Images  string `gorm:"column:images;not null" json:"images,omitempty"`
@@ -19,17 +26,15 @@ type Track struct {
 }
 
 type Image struct {
-	ID     uint   `gorm:"primaryKey;type:int"`
 	Height int    `gorm:"column:height;not null" json:"height,omitempty"`
 	Width  int    `gorm:"column:width;not null" json:"width,omitempty"`
-	URL    string `gorm:"column:url;uniqueIndex;not null;ON CONFLICT DO NOTHING" json:"url,omitempty"`
+	URL    string `gorm:"column:url;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" json:"url,omitempty"`
 }
 
 type Artist struct {
-	ID       uint   `gorm:"primaryKey;type:int"`
-	ArtistID string `gorm:"column:artist_id;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"artist_id,omitempty"`
-	Name     string `gorm:"column:name;not null" json:"name,omitempty"`
-	URI      string `gorm:"column:uri;not null" json:"uri,omitempty"`
+	ID   string `gorm:"column:artist_id;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"artist_id,omitempty"`
+	Name string `gorm:"column:name;not null" json:"name,omitempty"`
+	URI  string `gorm:"column:uri;not null" json:"uri,omitempty"`
 }
 
 var DB *gorm.DB

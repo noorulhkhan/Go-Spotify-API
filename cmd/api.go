@@ -34,7 +34,7 @@ func InitializeRouter() {
 // @Failure 500 {object} utils.ErrResp
 // @Router /track/search/{title} [get]
 func getTrack(c *gin.Context) {
-	var track Track
+	var track TrackView
 	var err error
 	title := c.Param("title")
 	track, err = FetchTrackByTitle(title)

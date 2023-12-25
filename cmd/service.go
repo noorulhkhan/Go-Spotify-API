@@ -52,11 +52,11 @@ func prepare() {
 }
 
 // ...
-func FetchTrackByTitle(title string) (Track, error) {
+func FetchTrackByTitle(title string) (TrackView, error) {
 	track := Track{}
 
 	if title == "" {
-		return track, errors.New("malformed request (no title found)")
+		return TrackView{}, errors.New("malformed request (no title found)")
 	}
 	// if !strings.HasPrefix(title, "isrc") {
 	// 	return track, errors.New("malformed request (invalid title found)")
@@ -76,7 +76,7 @@ func FetchTrackByTitle(title string) (Track, error) {
 		}
 		for _, item := range results.Tracks.Tracks {
 			if item.Popularity == popularity {
-				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+				track = Track{ID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 
 				// todo: insert records to database
 				if err := DB.Save(&track).Error; err != nil {
@@ -104,7 +104,8 @@ func FetchTrackByTitle(title string) (Track, error) {
 			}
 		}
 	}
-	return track, nil
+	trackView := Track2View(track)
+	return trackView, nil
 }
 
 func FetchTracksByArtist(artist string) ([]Track, error) {
@@ -121,7 +122,7 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	if results.Tracks != nil {
 		log.Println("Tracks by Artist:")
 		for _, item := range results.Tracks.Tracks {
-			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+			track := Track{ID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 			tracks = append(tracks, track)
 		}
 	}
@@ -136,7 +137,7 @@ func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
 	var str string
 	if len(simpleArtist) != 0 {
 		item := simpleArtist[0]
-		artist := Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
+		artist := Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
 		bytes, _ := json.Marshal(artist)
 		str = fmt.Sprint(string(bytes))
 	}
@@ -152,4 +153,14 @@ func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
 		str = fmt.Sprint(string(bytes))
 	}
 	return str
+}
+
+func Track2View(track Track) TrackView {
+	var track_view TrackView
+	var image Image
+	json.Unmarshal([]byte(track.Images), &image)
+	var artist Artist
+	json.Unmarshal([]byte(track.Artists), &artist)
+	track_view = TrackView{ID: track.ID, ISRC: track.ISRC, Title: track.Title, Images: &image, Artists: &artist}
+	return track_view
 }
