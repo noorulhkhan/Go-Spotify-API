@@ -82,25 +82,6 @@ func FetchTrackByTitle(title string) (Track, error) {
 				if err := DB.Save(&track).Error; err != nil {
 					log.Println("Inside getTrack:", err.Error())
 				}
-				// tx := DB.Begin()
-				// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
-				// 	tx.Rollback()
-				// 	log.Println("Inside getTrack:", err.Error())
-				// }
-				// if err = tx.Create(GetArtistsOfTrack(item.Artists)).Error; err != nil {
-				// 	tx.Rollback()
-				// 	log.Println("Inside getTrack:", err.Error())
-				// }
-				// if err = tx.Create(&track).Error; err != nil {
-				// 	tx.Rollback()
-				// 	log.Println("Inside getTrack:", err.Error())
-				// }
-				// if err := tx.Commit().Error; err != nil {
-				// 	tx.Rollback()
-				// }
-				// if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&track).Error; err != nil {
-				// 	fmt.Println("DEBUG: Something wrong went")
-				// }
 			}
 		}
 	}
@@ -134,22 +115,36 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 
 func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
 	var str string
-	if len(simpleArtist) != 0 {
-		item := simpleArtist[0]
+	// if len(simpleArtist) != 0 {
+	// 	item := simpleArtist[0]
+	// 	artist := Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
+	// 	bytes, _ := json.Marshal(artist)
+	// 	str = fmt.Sprint(string(bytes))
+	// }
+	artists := make([]Artist, 0)
+	for _, item := range simpleArtist {
 		artist := Artist{ID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
-		bytes, _ := json.Marshal(artist)
-		str = fmt.Sprint(string(bytes))
+		artists = append(artists, artist)
 	}
+	bytes, _ := json.Marshal(artists)
+	str = fmt.Sprint(string(bytes))
 	return str
 }
 
 func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
 	var str string
-	if len(spotifyImages) != 0 {
-		item := spotifyImages[0]
+	// if len(spotifyImages) != 0 {
+	// 	item := spotifyImages[0]
+	// 	image := Image{Height: item.Height, Width: item.Width, URL: item.URL}
+	// 	bytes, _ := json.Marshal(image)
+	// 	str = fmt.Sprint(string(bytes))
+	// }
+	images := make([]Image, 0)
+	for _, item := range spotifyImages {
 		image := Image{Height: item.Height, Width: item.Width, URL: item.URL}
-		bytes, _ := json.Marshal(image)
-		str = fmt.Sprint(string(bytes))
+		images = append(images, image)
 	}
+	bytes, _ := json.Marshal(images)
+	str = fmt.Sprint(string(bytes))
 	return str
 }

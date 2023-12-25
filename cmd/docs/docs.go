@@ -122,57 +122,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.Artist": {
-            "type": "object",
-            "properties": {
-                "artist_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "uri": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.Image": {
-            "type": "object",
-            "properties": {
-                "height": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "width": {
-                    "type": "integer"
-                }
-            }
-        },
         "main.Track": {
             "type": "object",
             "properties": {
                 "artists": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/main.Artist"
-                    }
-                },
-                "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "images": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/main.Image"
-                    }
+                    "type": "string"
                 },
                 "isrc": {
                     "type": "string"

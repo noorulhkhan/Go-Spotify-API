@@ -1,38 +1,10 @@
 definitions:
-  main.Artist:
-    properties:
-      artist_id:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      uri:
-        type: string
-    type: object
-  main.Image:
-    properties:
-      height:
-        type: integer
-      id:
-        type: integer
-      url:
-        type: string
-      width:
-        type: integer
-    type: object
   main.Track:
     properties:
       artists:
-        items:
-          $ref: '#/definitions/main.Artist'
-        type: array
-      id:
-        type: integer
+        type: string
       images:
-        items:
-          $ref: '#/definitions/main.Image'
-        type: array
+        type: string
       isrc:
         type: string
       title:

@@ -50,6 +50,7 @@ func InitialMigration() {
 	}
 
 	DB.Exec("PRAGMA foreign_keys = ON")
-	DB.AutoMigrate(&Image{}, &Artist{}, &Track{})
+	DB.AutoMigrate(&Track{})
+	// DB.AutoMigrate(&Image{}, &Artist{}, &Track{})
 	fmt.Println("Database tables migrated...")
 }
