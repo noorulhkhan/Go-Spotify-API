@@ -79,9 +79,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 
 				// todo: insert records to database
-				// if err := DB.Save(track); err != nil {
-				// 	fmt.Println("DEBUG: Something wrong went")
-				// }
+				if err := DB.Save(&track).Error; err != nil {
+					log.Println("Inside getTrack:", err.Error())
+				}
 				// tx := DB.Begin()
 				// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
 				// 	tx.Rollback()
@@ -134,34 +134,22 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 
 func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
 	var str string
-	fmt.Println("LEN (simpleArtist):", len(simpleArtist))
 	if len(simpleArtist) != 0 {
 		item := simpleArtist[0]
-		fmt.Printf("artist_in: %#v\n", item)
 		artist := Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
-		fmt.Printf("artist_in: %#v\n", artist)
 		bytes, _ := json.Marshal(artist)
-		fmt.Printf("LEN (bytes): %d, string(bytes):%s\n", len(bytes), string(bytes))
 		str = fmt.Sprint(string(bytes))
-		fmt.Println("DEBUG:********* error in unmarshling artist")
 	}
-	fmt.Println("artist:", str)
 	return str
 }
 
 func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
 	var str string
-	fmt.Println("LEN (spotifyImages):", len(spotifyImages))
 	if len(spotifyImages) != 0 {
 		item := spotifyImages[0]
-		fmt.Printf("image_in: %#v\n", item)
 		image := Image{Height: item.Height, Width: item.Width, URL: item.URL}
-		fmt.Printf("image_in: %#v\n", image)
 		bytes, _ := json.Marshal(image)
-		fmt.Printf("LEN (bytes): %d, string(bytes):%s\n", len(bytes), string(bytes))
 		str = fmt.Sprint(string(bytes))
-		fmt.Println("DEBUG:********* error in unmarshling image")
 	}
-	fmt.Println("image:", str)
 	return str
 }
