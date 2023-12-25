@@ -1,7 +1,6 @@
 Database:
-	sqlite3 is used
+	sqlite3 is used instead of MySQL
 	3 tables created - tracks, images, artists
-	2 relationship tables - track_artists, track_images
 
 Code & build:
 	; latest code is on dev branch
@@ -22,4 +21,5 @@ POSTMAN:
 	GET	http://localhost:8080/track/search/holiday
 	GET	http://localhost:8080/track/search/isrc:GBAYE0601477
 	GET	http://localhost:8080/track/find/The Beatles
+	GET	http://localhost:8080/track
 
