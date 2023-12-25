@@ -68,7 +68,7 @@ func FetchTrackByTitle(title string) (Track, error) {
 	}
 	// handle track results
 	if results.Tracks != nil {
-		fmt.Println("*******************A Track by ISRC code:")
+		fmt.Println("A Track by ISRC code:")
 		popularity := 0
 		for _, item := range results.Tracks.Tracks {
 			//max popularity
@@ -76,7 +76,7 @@ func FetchTrackByTitle(title string) (Track, error) {
 		}
 		for _, item := range results.Tracks.Tracks {
 			if item.Popularity == popularity {
-				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Image: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artist: GetArtistsOfTrack(item.Artists)}
 
 				// todo: insert records to database
 				// tx := DB.Begin()
@@ -96,8 +96,8 @@ func FetchTrackByTitle(title string) (Track, error) {
 				// 	tx.Rollback()
 				// }
 				if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&track).Error; err != nil {
-					fmt.Println("DEBUG:******************************Something wrong went")
-			
+					fmt.Println("DEBUG: Something wrong went")
+
 				}
 			}
 		}
@@ -117,9 +117,9 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	}
 	// handle track results
 	if results.Tracks != nil {
-		log.Println("*******************Tracks by Artist:")
+		log.Println("Tracks by Artist:")
 		for _, item := range results.Tracks.Tracks {
-			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
+			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Image: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artist: GetArtistsOfTrack(item.Artists)}
 			tracks = append(tracks, track)
 		}
 	}
@@ -130,18 +130,18 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	return tracks, nil
 }
 
-func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) []Artist {
-	artists := make([]Artist, 0)
-	for _, item := range simpleArtist {
-		artists = append(artists, Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)})
+func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) *Artist {
+	if len(simpleArtist) != 0 {
+		item := simpleArtist[0]
+		return &Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
 	}
-	return artists
+	return nil
 }
 
-func GetImageUrlOfTrack(spotifyImages []spotify.Image) []Image {
-	images := make([]Image, 0)
-	for _, image := range spotifyImages {
-		images = append(images, Image{Height: image.Height, Width: image.Width, URL: image.URL})
+func GetImageUrlOfTrack(spotifyImages []spotify.Image) *Image {
+	if len(spotifyImages) != 0 {
+		item := spotifyImages[0]
+		return &Image{Height: item.Height, Width: item.Width, URL: item.URL}
 	}
-	return images
+	return nil
 }
