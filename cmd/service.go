@@ -108,6 +108,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 
 func FetchTracksByArtist(artist string) ([]Track, error) {
 	tracks := make([]Track, 0)
+	tracksLight := make([]Track, 0)
+	images := make([]Image, 0)
+	artists := make([]Artist, 0)
 
 	if artist == "" {
 		return tracks, errors.New("malformed request (no artist found)")
@@ -122,10 +125,36 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 		for _, item := range results.Tracks.Tracks {
 			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images, item.ID.String()), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists, item.ID.String())}
 			tracks = append(tracks, track)
+			trackLight := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: nil, Title: item.Name, Artists: nil}
+			tracksLight = append(tracksLight, trackLight)
+			for _, image := range *GetImageUrlOfTrack(item.Album.Images, item.ID.String()) {
+				images = append(images, Image{Height: image.Height, Width: image.Width, URL: image.URL, TrackID: item.ID.String()})
+			}
+			for _, artist := range *GetArtistsOfTrack(item.Artists, item.ID.String()) {
+				artists = append(artists, Artist{ID: artist.ID, Name: artist.Name, URI: artist.URI, TrackID: item.ID.String()})
+			}
 		}
 	}
 	// todo: insert records to database
-	// if err = DB.Create(&tracks).Error; err != nil {
+	tx := DB.Begin()
+	if err = tx.Save(&tracksLight).Error; err != nil {
+		tx.Rollback()
+		log.Println("Inside getTracks:", err.Error())
+	}
+	if err = tx.Save(&images).Error; err != nil {
+		tx.Rollback()
+		log.Println("Inside getTracks:", err.Error())
+	}
+	if err = tx.Save(&artists).Error; err != nil {
+		tx.Rollback()
+		log.Println("Inside getTracks:", err.Error())
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+	}
+
+	// if err = DB.Debug().Save(&tracks).Error; err != nil {
+	// if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&tracksLight).Error; err != nil {
 	// 	log.Println("Inside getTrack:", err.Error())
 	// }
 	return tracks, nil
