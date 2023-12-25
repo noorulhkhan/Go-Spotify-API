@@ -3,10 +3,10 @@ Database:
 	3 tables created - tracks, images, artists
 
 Code & build:
-	; latest code is on dev branch
+	; latest code is on master branch
 	git clone https://github.com/noorulhkhan/Go-Spotify-API.git
 	cd Go-Spotify-API
-	git checkout dev
+	git checkout master
 	cd cmd
 	go build
 	.\cmd.exe
