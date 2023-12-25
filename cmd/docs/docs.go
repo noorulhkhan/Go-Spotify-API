@@ -23,6 +23,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/track": {
+            "get": {
+                "description": "Gets tracks collection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets tracks collection",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.Track"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/track/find/{artist}": {
             "get": {
                 "description": "Get tracks collection by Artist",
@@ -128,10 +169,10 @@ const docTemplate = `{
                 "artist_id": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
+                    "type": "string"
+                },
+                "track_id": {
                     "type": "string"
                 },
                 "uri": {
@@ -145,8 +186,8 @@ const docTemplate = `{
                 "height": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
+                "track_id": {
+                    "type": "string"
                 },
                 "url": {
                     "type": "string"
@@ -164,9 +205,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/main.Artist"
                     }
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "images": {
                     "type": "array",

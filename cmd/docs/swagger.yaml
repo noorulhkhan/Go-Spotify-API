@@ -3,9 +3,9 @@ definitions:
     properties:
       artist_id:
         type: string
-      id:
-        type: integer
       name:
+        type: string
+      track_id:
         type: string
       uri:
         type: string
@@ -14,8 +14,8 @@ definitions:
     properties:
       height:
         type: integer
-      id:
-        type: integer
+      track_id:
+        type: string
       url:
         type: string
       width:
@@ -27,8 +27,6 @@ definitions:
         items:
           $ref: '#/definitions/main.Artist'
         type: array
-      id:
-        type: integer
       images:
         items:
           $ref: '#/definitions/main.Image'
@@ -58,6 +56,33 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 paths:
+  /track:
+    get:
+      consumes:
+      - application/json
+      description: Gets tracks collection
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Track'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+      summary: Gets tracks collection
   /track/find/{artist}:
     get:
       consumes:
