@@ -52,11 +52,11 @@ func prepare() {
 }
 
 // ...
-func FetchTrackByTitle(title string) (TrackView, error) {
+func FetchTrackByTitle(title string) (Track, error) {
 	track := Track{}
 
 	if title == "" {
-		return TrackView{}, errors.New("malformed request (no title found)")
+		return track, errors.New("malformed request (no title found)")
 	}
 	// if !strings.HasPrefix(title, "isrc") {
 	// 	return track, errors.New("malformed request (invalid title found)")
@@ -104,8 +104,7 @@ func FetchTrackByTitle(title string) (TrackView, error) {
 			}
 		}
 	}
-	trackView := Track2View(track)
-	return trackView, nil
+	return track, nil
 }
 
 func FetchTracksByArtist(artist string) ([]Track, error) {
@@ -153,14 +152,4 @@ func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
 		str = fmt.Sprint(string(bytes))
 	}
 	return str
-}
-
-func Track2View(track Track) TrackView {
-	var track_view TrackView
-	var image Image
-	json.Unmarshal([]byte(track.Images), &image)
-	var artist Artist
-	json.Unmarshal([]byte(track.Artists), &artist)
-	track_view = TrackView{ID: track.ID, ISRC: track.ISRC, Title: track.Title, Images: &image, Artists: &artist}
-	return track_view
 }

@@ -9,14 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type TrackView struct {
-	ID      string  `gorm:"column:track_id;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
-	ISRC    string  `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
-	Title   string  `gorm:"column:title;not null" json:"title,omitempty"`
-	Images  *Image  `gorm:"column:images;not null" json:"images,omitempty"`
-	Artists *Artist `gorm:"column:artists;not null" json:"artists,omitempty"`
-}
-
 type Track struct {
 	ID      string `gorm:"column:track_id;primaryKey;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
 	ISRC    string `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
