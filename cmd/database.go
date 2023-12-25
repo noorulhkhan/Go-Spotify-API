@@ -10,14 +10,12 @@ import (
 )
 
 type Track struct {
-	ID       uint    `gorm:"primaryKey;type:int"`
-	TrackID  string  `gorm:"column:track_id;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
-	ISRC     string  `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
-	Title    string  `gorm:"column:title;not null" json:"title,omitempty"`
-	ImageID  *uint   `binding:"-" json:"ImageID,omitempty"`
-	Image    *Image  `gorm:"column:images;constraint:OnDelete:SET NULL" json:"images,omitempty"`
-	ArtistID *uint   `binding:"-" json:"ArtistID,omitempty"`
-	Artist   *Artist `gorm:"column:artists;constraint:OnDelete:SET NULL" json:"artists,omitempty"`
+	ID      uint   `gorm:"primaryKey;type:int"`
+	TrackID string `gorm:"column:track_id;uniqueIndex;not null;ON CONFLICT DO NOTHING" binding:"-" json:"track_id,omitempty"`
+	ISRC    string `gorm:"column:isrc;uniqueIndex;not null" json:"isrc"`
+	Title   string `gorm:"column:title;not null" json:"title,omitempty"`
+	Images  string `gorm:"column:images;not null" json:"images,omitempty"`
+	Artists string `gorm:"column:artists;not null" json:"artists,omitempty"`
 }
 
 type Image struct {

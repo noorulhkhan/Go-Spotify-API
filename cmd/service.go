@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -15,7 +16,6 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/zmb3/spotify/v2"
-	"gorm.io/gorm"
 )
 
 var (
@@ -76,9 +76,12 @@ func FetchTrackByTitle(title string) (Track, error) {
 		}
 		for _, item := range results.Tracks.Tracks {
 			if item.Popularity == popularity {
-				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Image: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artist: GetArtistsOfTrack(item.Artists)}
+				track = Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 
 				// todo: insert records to database
+				// if err := DB.Save(track); err != nil {
+				// 	fmt.Println("DEBUG: Something wrong went")
+				// }
 				// tx := DB.Begin()
 				// if err = tx.Save(GetImageUrlOfTrack(item.Album.Images)).Error; err != nil {
 				// 	tx.Rollback()
@@ -95,10 +98,9 @@ func FetchTrackByTitle(title string) (Track, error) {
 				// if err := tx.Commit().Error; err != nil {
 				// 	tx.Rollback()
 				// }
-				if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&track).Error; err != nil {
-					fmt.Println("DEBUG: Something wrong went")
-
-				}
+				// if err := DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&track).Error; err != nil {
+				// 	fmt.Println("DEBUG: Something wrong went")
+				// }
 			}
 		}
 	}
@@ -119,29 +121,47 @@ func FetchTracksByArtist(artist string) ([]Track, error) {
 	if results.Tracks != nil {
 		log.Println("Tracks by Artist:")
 		for _, item := range results.Tracks.Tracks {
-			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Image: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artist: GetArtistsOfTrack(item.Artists)}
+			track := Track{TrackID: item.ID.String(), ISRC: item.ExternalIDs["isrc"], Images: GetImageUrlOfTrack(item.Album.Images), Title: item.Name, Artists: GetArtistsOfTrack(item.Artists)}
 			tracks = append(tracks, track)
 		}
 	}
 	// todo: insert records to database
-	// if err = DB.Create(&tracks).Error; err != nil {
-	// 	log.Println("Inside getTrack:", err.Error())
-	// }
+	if err = DB.Save(&tracks).Error; err != nil {
+		log.Println("Inside getTrack:", err.Error())
+	}
 	return tracks, nil
 }
 
-func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) *Artist {
+func GetArtistsOfTrack(simpleArtist []spotify.SimpleArtist) string {
+	var str string
+	fmt.Println("LEN (simpleArtist):", len(simpleArtist))
 	if len(simpleArtist) != 0 {
 		item := simpleArtist[0]
-		return &Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
+		fmt.Printf("artist_in: %#v\n", item)
+		artist := Artist{ArtistID: item.ID.String(), Name: item.Name, URI: string(item.URI)}
+		fmt.Printf("artist_in: %#v\n", artist)
+		bytes, _ := json.Marshal(artist)
+		fmt.Printf("LEN (bytes): %d, string(bytes):%s\n", len(bytes), string(bytes))
+		str = fmt.Sprint(string(bytes))
+		fmt.Println("DEBUG:********* error in unmarshling artist")
 	}
-	return nil
+	fmt.Println("artist:", str)
+	return str
 }
 
-func GetImageUrlOfTrack(spotifyImages []spotify.Image) *Image {
+func GetImageUrlOfTrack(spotifyImages []spotify.Image) string {
+	var str string
+	fmt.Println("LEN (spotifyImages):", len(spotifyImages))
 	if len(spotifyImages) != 0 {
 		item := spotifyImages[0]
-		return &Image{Height: item.Height, Width: item.Width, URL: item.URL}
+		fmt.Printf("image_in: %#v\n", item)
+		image := Image{Height: item.Height, Width: item.Width, URL: item.URL}
+		fmt.Printf("image_in: %#v\n", image)
+		bytes, _ := json.Marshal(image)
+		fmt.Printf("LEN (bytes): %d, string(bytes):%s\n", len(bytes), string(bytes))
+		str = fmt.Sprint(string(bytes))
+		fmt.Println("DEBUG:********* error in unmarshling image")
 	}
-	return nil
+	fmt.Println("image:", str)
+	return str
 }
