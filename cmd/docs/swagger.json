@@ -12,6 +12,47 @@
         }
     },
     "paths": {
+        "/track": {
+            "get": {
+                "description": "Gets tracks collection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets tracks collection",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.Track"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/track/find/{artist}": {
             "get": {
                 "description": "Get tracks collection by Artist",
@@ -111,37 +152,16 @@
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "main.Artist": {
             "type": "object",
             "properties": {
                 "artist_id": {
                     "type": "string"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
-                "updatedAt": {
+                "track_id": {
                     "type": "string"
                 },
                 "uri": {
@@ -152,19 +172,10 @@
         "main.Image": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
                 "height": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "updatedAt": {
+                "track_id": {
                     "type": "string"
                 },
                 "url": {
@@ -184,15 +195,6 @@
                         "$ref": "#/definitions/main.Artist"
                     }
                 },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "images": {
                     "type": "array",
                     "items": {
@@ -206,9 +208,6 @@
                     "type": "string"
                 },
                 "track_id": {
-                    "type": "string"
-                },
-                "updatedAt": {
                     "type": "string"
                 }
             }

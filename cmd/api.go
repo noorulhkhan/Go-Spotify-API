@@ -18,6 +18,7 @@ func InitializeRouter() {
 
 	router.GET("/track/search/:title", getTrack)
 	router.GET("/track/find/:artist", findTracks)
+	router.GET("/track", getTracks)
 
 	router.Run("localhost:8080")
 }
@@ -62,6 +63,28 @@ func findTracks(c *gin.Context) {
 	var tracks []Track
 	artist := c.Param("artist")
 	tracks, err = FetchTracksByArtist(artist)
+	if err != nil {
+		errresp := utils.ErrResp{Error: err.Error(), Message: "Unable to fetch data"}
+		c.JSON(http.StatusBadRequest, errresp)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, tracks)
+}
+
+// getTrack godoc
+// @Summary Gets tracks collection
+// @Description Gets tracks collection
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []main.Track
+// @Failure 400 {object} utils.ErrResp
+// @Failure 404 {object} utils.ErrResp
+// @Failure 500 {object} utils.ErrResp
+// @Router /track [get]
+func getTracks(c *gin.Context) {
+	var tracks []Track
+	var err error
+	tracks, err = FetchTracks()
 	if err != nil {
 		errresp := utils.ErrResp{Error: err.Error(), Message: "Unable to fetch data"}
 		c.JSON(http.StatusBadRequest, errresp)

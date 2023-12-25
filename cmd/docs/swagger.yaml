@@ -1,40 +1,20 @@
 definitions:
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   main.Artist:
     properties:
       artist_id:
         type: string
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
       name:
         type: string
-      updatedAt:
+      track_id:
         type: string
       uri:
         type: string
     type: object
   main.Image:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       height:
         type: integer
-      id:
-        type: integer
-      updatedAt:
+      track_id:
         type: string
       url:
         type: string
@@ -47,12 +27,6 @@ definitions:
         items:
           $ref: '#/definitions/main.Artist'
         type: array
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
       images:
         items:
           $ref: '#/definitions/main.Image'
@@ -62,8 +36,6 @@ definitions:
       title:
         type: string
       track_id:
-        type: string
-      updatedAt:
         type: string
     type: object
   utils.ErrResp:
@@ -84,6 +56,33 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 paths:
+  /track:
+    get:
+      consumes:
+      - application/json
+      description: Gets tracks collection
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Track'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResp'
+      summary: Gets tracks collection
   /track/find/{artist}:
     get:
       consumes:
