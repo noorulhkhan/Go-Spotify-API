@@ -1,7 +1,6 @@
 Database:
 	sqlite3 is used
-	3 tables created - tracks, images, artists
-	2 relationship tables - track_artists, track_images
+	1 table tracks created
 
 Code & build:
 	; latest code is on dev branch
